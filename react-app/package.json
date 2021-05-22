@@ -22,7 +22,11 @@
   "dependencies": {
     "@ant-design/pro-layout": "^6.5.0",
     "@umijs/preset-react": "1.x",
-    "umi": "^3.4.15"
+    "react-vega": "^7.4.3",
+    "umi": "^3.4.15",
+    "vega": "^5.20.2",
+    "vega-embed": "^6.18.2",
+    "vega-lite": "5.0.0"
   },
   "devDependencies": {
     "@types/react": "^17.0.0",
