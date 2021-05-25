@@ -3,5 +3,11 @@
 }
 
 .title {
+  font-size: x-large;
   background: rgb(242, 176, 121);
+}
+
+.subtitle {
+  font-size: large;
+  background:rgb(255, 199, 121);
 }

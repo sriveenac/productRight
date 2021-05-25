@@ -26,13 +26,23 @@ def get_vega_js():
     return chart.to_json()
 
 
-@app.route('/top-categories-by-sales')
-def get_top_categories_by_sales():
-    top_ten_cat_sales = data_analysis.top_categories_by_num_sales()
-    chart = alt.Chart(top_ten_cat_sales, title='Top 10 categories by # of Sales').mark_bar().encode(
+# By category
+# TODO: top x
+@app.route('/top-categories-by-sales-with-revenue')
+def get_top_categories_by_sales_with_revenue():
+    top_cat_sales = data_analysis.top_categories_by_sales()
+    chart_sales = alt.Chart(top_cat_sales, title='Top 10 categories by # of Sales').mark_bar().encode(
         x=alt.X('product_id:Q', title='# of sales'),
         y=alt.Y('category_code:N', sort='-x'),
     )
+
+    top_ten_cat_by_revenues = data_analysis.top_categories_by_revenues()
+    chart_revenues = alt.Chart(top_ten_cat_by_revenues, title='Total Revenue').mark_text().encode(
+        y=alt.Y('category_code:N', axis=None, sort='-text'),
+        text='price:Q'
+    ).properties(width=100)
+
+    chart = chart_sales | chart_revenues
     return chart.to_json()
 
 
@@ -45,9 +55,12 @@ def get_top_categories_by_revenues():
     ).properties(width=100)
     return chart.to_json()
 
+# TODO: top x
+
+
 @app.route('/conversions')
 def get_conversions():
-    nov_funnel = data_analysis.nov_funnel()
+    nov_funnel = data_analysis.funnel_by_category()
     categories = list(nov_funnel.category_code.unique())
 
     cat_dropdown = alt.binding_select(options=categories)
@@ -66,4 +79,50 @@ def get_conversions():
     ).transform_filter(
         cat_select
     ).properties(title="Select a Category to Highlight It")
+    return chart.to_json()
+
+
+@app.route('/top-brands-by-sales-grouped-by-category')
+def get_top_brands_by_sales_grouped_category():
+    return {}
+
+
+# By brand
+@app.route('/top-brands-by-sales-with-revenues')
+def get_top_brands_by_sales():
+    chart1 = alt.Chart(data_analysis.top_brands_by_sales(), title='Top 10 brands by # of Sales').mark_bar().encode(
+        x=alt.X('product_id:Q', title='# of sales'),
+        y=alt.Y('brand:N', sort='-x'),
+    )
+
+    chart2 = alt.Chart(data_analysis.top_brands_by_revenues(), title='Total Revenue').mark_text().encode(
+        y=alt.Y('brand:N', axis=None, sort='-text'),
+        text='price:Q'
+    ).properties(width=100)
+
+    chart = chart1 | chart2
+    return chart.to_json()
+
+
+@app.route('/top-brands-by-conversions')
+def get_top_brands_by_conversions():
+    nov_funnel_by_brand = data_analysis.funnel_by_brand()
+
+    brands = list(nov_funnel_by_brand.brand.unique())
+    brand_dropdown = alt.binding_select(options=brands)
+    brand_select = alt.selection_single(
+        fields=['brand'], bind=brand_dropdown, name="Brand")
+
+    chart = alt.Chart(nov_funnel_by_brand, title='Novemeber:Conversion for top 10 brands').mark_bar().encode(
+        x=alt.X('event_type:N', sort=('view', 'cart', 'purchase')),
+        y=alt.Y('funnel_value:Q'),
+        column='brand:O'
+    ).properties(
+        width=200,
+        height=300
+    ).resolve_scale(y='independent').add_selection(
+        brand_select
+    ).transform_filter(
+        brand_select
+    ).properties(title="Select a Brand to Highlight It")
     return chart.to_json()

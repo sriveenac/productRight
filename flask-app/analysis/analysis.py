@@ -6,6 +6,8 @@ import sys
 """
     Analysis
 """
+
+
 class DataAnalysis:
     def __init__(self, data_path='') -> None:
         self.dm = DataManager(data_path)
@@ -17,11 +19,14 @@ class DataAnalysis:
 
     def data_preprocess(self):
         if not (self.sales_nov and self.carts_nov and self.views_nov):
-            self.sales_nov, self.carts_nov, self.views_nov = self.analyser.pre_process(self.data)
+            self.sales_nov, self.carts_nov, self.views_nov = self.analyser.pre_process(
+                self.data)
 
     '''Supported analyses'''
     # TODO: exceptions
-    def top_categories_by_num_sales(self, top=10):
+    # By category
+
+    def top_categories_by_sales(self, top=10):
         return self.analyser.generate_base_counts(
             self.sales_nov, metrics='product_id', grouped='category_code', top=top)
 
@@ -29,18 +34,30 @@ class DataAnalysis:
         return self.analyser.generate_base_sum(
             self.sales_nov, metrics='price', grouped='category_code', top=top)
 
-    def nov_conversions(self):
-        top_10_cat_sales = self.top_categories_by_num_sales()
+    def conversions_by_category(self):
+        top_10_cat_sales = self.top_categories_by_sales()
         return self.analyser.conversions(
             self.data, grouped='category_code', metric='user_session', comp=top_10_cat_sales)
-    
-    def nov_funnel(self):
+
+    def funnel_by_category(self):
         return self.analyser.funnel(self.data, grouped='category_code', metric='user_session')
+
+    # By brand
+    def top_brands_by_sales(self, top=10):
+        return self.analyser.generate_base_counts(self.sales_nov, metrics='product_id', grouped='brand', top=top)
+
+    def top_brands_by_revenues(self, top=10):
+        return self.analyser.generate_base_sum(self.sales_nov, metrics='price', grouped='brand', top=10)
+
+    def funnel_by_brand(self):
+        return self.analyser.funnel(self.data, grouped='brand', metric='user_session')
 
 
 """
     Data
 """
+
+
 class DataManager:
     def __init__(self, data_path='') -> None:
         self.data_path = data_path
@@ -60,6 +77,8 @@ class DataManager:
 """
     Analyser
 """
+
+
 class Analyser:
     def __init__(self) -> None:
         pass
@@ -79,6 +98,7 @@ class Analyser:
         return sales_nov, carts_nov, views_nov
 
     '''Helpers'''
+
     def generate_base_counts(self, data, metrics, grouped, top, asc=False, subset=(), choice=()):
         if subset != ():
             data_up = data.loc[data[subset] == choice]
@@ -90,7 +110,6 @@ class Analyser:
 
         return data_up.iloc[:top+1, :]
 
-
     def generate_base_sum(self, data, metrics, grouped, top, asc=False, subset=(), choice=()):
         if subset != ():
             data_up = data.loc[data[subset] == choice]
@@ -101,7 +120,6 @@ class Analyser:
         data_up = data_up.sort_values(by=metrics, axis=0, ascending=asc)
 
         return data_up.iloc[:top+1, :]
-
 
     def conversions(self, data, grouped, metric, comp, subset=(), choice=()):
         if subset != ():
@@ -129,10 +147,9 @@ class Analyser:
         nov_grouped_t = nov_grouped_t.drop(grouped)
         nov_grouped_t.reset_index(inplace=True)
         nov_grouped_t = nov_grouped_t.melt(id_vars=['event_type'],
-                                        var_name=grouped,
-                                        value_name="conversion_value")
+                                           var_name=grouped,
+                                           value_name="conversion_value")
         return nov_grouped_t
-
 
     def funnel(self, data, grouped, metric, subset=(), choice=()):
         if subset != ():
@@ -152,8 +169,6 @@ class Analyser:
         nov_grouped = nov_grouped.drop(grouped)
         nov_grouped.reset_index(inplace=True)
         nov_grouped = nov_grouped.melt(id_vars=['event_type'],
-                                    var_name=grouped,
-                                    value_name="funnel_value")
+                                       var_name=grouped,
+                                       value_name="funnel_value")
         return nov_grouped
-
-

@@ -10,20 +10,24 @@ import BarChart from '../components/barchart'
 
 export default function Page() {
   // Vega object
-  const [spec, setSpec] = useState({});
-  const [spec2, setSpec2] = useState({});
-  const [spec3, setSpec3] = useState({});
+  const [specTopCategoriesBySales, setSpecTopCategoriesBySales] = useState({});
+  const [specTopCategoriesByConversions, setSpecTopCategoriesByConversions] = useState({});
+  const [specTopBrandsBySales, setSpecTopBrandsBySales] = useState({});
+  const [specTopBrandsByConversions, setSpecTopBrandsByConversions] = useState({});
   
   // Get vega object
   useEffect(()=>{
-    fetch('/api/top-categories-by-sales').then(res => res.json()).then(data => {
-      setSpec(data);
-    });
-    fetch('/api/top-categories-by-revenues').then(res => res.json()).then(data => {
-      setSpec2(data);
+    fetch('/api/top-categories-by-sales-with-revenue').then(res => res.json()).then(data => {
+      setSpecTopCategoriesBySales(data);
     });
     fetch('/api/conversions').then(res => res.json()).then(data => {
-      setSpec3(data);
+      setSpecTopCategoriesByConversions(data);
+    });
+    fetch('/api/top-brands-by-sales-with-revenues').then(res => res.json()).then(data => {
+      setSpecTopBrandsBySales(data);
+    });
+    fetch('/api/top-brands-by-conversions').then(res => res.json()).then(data => {
+      setSpecTopBrandsByConversions(data);
     });
   }, []);
 
@@ -37,9 +41,17 @@ export default function Page() {
           <h1 className={styles.title}>Analysis</h1>
         </div>
 
-        <BarChart spec={spec}></BarChart>
-        <BarChart spec={spec2}></BarChart>
-        <BarChart spec={spec3}></BarChart>
+        <div>
+          <h2 className={styles.subtitle}>Category Level</h2>
+        </div>
+        <BarChart spec={specTopCategoriesBySales}></BarChart>
+        <BarChart spec={specTopCategoriesByConversions}></BarChart>
+        
+        <div>
+          <h2 className={styles.subtitle}>Brand Level</h2>
+        </div>
+        <BarChart spec={specTopBrandsBySales}></BarChart>
+        <BarChart spec={specTopBrandsByConversions}></BarChart>
       </ProLayout>
     </>
   );
