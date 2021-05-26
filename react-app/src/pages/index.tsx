@@ -5,7 +5,6 @@ import ProLayout, {
 } from '@ant-design/pro-layout';
 import menuProps from './menuProps';
 import React, { useEffect, useState } from 'react';
-import BarChart from '../components/barchart'
 
 export default function IndexPage() {
   // Get time
@@ -19,11 +18,6 @@ export default function IndexPage() {
     fetch('/api/time').then(res => res.json()).then(data => {
       setCurrentTime(data.time);
     });
-
-    // Get vega object
-    fetch('/api/vega').then(res => res.json()).then(data => {
-      setSpec(data);
-    })
   }, []);
 
   // Return layout
@@ -37,8 +31,6 @@ export default function IndexPage() {
           <h1 className={styles.title}>Page index</h1>
           <h2>Current time is: {currentTime}</h2>
         </div>
-
-        <BarChart spec={spec}></BarChart>
       </ProLayout>
     </>
   );
