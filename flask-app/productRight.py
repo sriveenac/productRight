@@ -25,7 +25,7 @@ def get_vega_js():
     chart = chart.mark_point().encode(x='Displacement')
     return chart.to_json()
 
-
+'''Basic analysis/ visualization'''
 # By category
 # TODO: top x
 @app.route('/top-categories-by-sales-with-revenue')
@@ -56,8 +56,6 @@ def get_top_categories_by_revenues():
     return chart.to_json()
 
 # TODO: top x
-
-
 @app.route('/conversions')
 def get_conversions():
     nov_funnel = data_analysis.funnel_by_category()
@@ -126,3 +124,10 @@ def get_top_brands_by_conversions():
         brand_select
     ).properties(title="Select a Brand to Highlight It")
     return chart.to_json()
+
+
+'''Recommendation'''
+@app.route('/nearest-items')
+def get_nearest_items():
+    df = data_analysis.find_nearest_item(1003461)
+    return df.to_html()

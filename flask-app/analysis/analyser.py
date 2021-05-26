@@ -1,101 +1,14 @@
-import numpy as np
 import pandas as pd
-import datetime as dt
-import sys
-
-"""
-    Analysis
-"""
-
-
-class DataAnalysis:
-    def __init__(self, data_path='') -> None:
-        self.dm = DataManager(data_path)
-        self.data = self.dm.fetch()
-        self.sales_nov, self.carts_nov, self.views_nov = None, None, None
-        self.analyser = Analyser()
-
-        self.data_preprocess()
-
-    def data_preprocess(self):
-        if not (self.sales_nov and self.carts_nov and self.views_nov):
-            self.sales_nov, self.carts_nov, self.views_nov = self.analyser.pre_process(
-                self.data)
-
-    '''Supported analyses'''
-    # TODO: exceptions
-    # By category
-
-    def top_categories_by_sales(self, top=10):
-        return self.analyser.generate_base_counts(
-            self.sales_nov, metrics='product_id', grouped='category_code', top=top)
-
-    def top_categories_by_revenues(self, top=10):
-        return self.analyser.generate_base_sum(
-            self.sales_nov, metrics='price', grouped='category_code', top=top)
-
-    def conversions_by_category(self):
-        top_10_cat_sales = self.top_categories_by_sales()
-        return self.analyser.conversions(
-            self.data, grouped='category_code', metric='user_session', comp=top_10_cat_sales)
-
-    def funnel_by_category(self):
-        return self.analyser.funnel(self.data, grouped='category_code', metric='user_session')
-
-    # By brand
-    def top_brands_by_sales(self, top=10):
-        return self.analyser.generate_base_counts(self.sales_nov, metrics='product_id', grouped='brand', top=top)
-
-    def top_brands_by_revenues(self, top=10):
-        return self.analyser.generate_base_sum(self.sales_nov, metrics='price', grouped='brand', top=10)
-
-    def funnel_by_brand(self):
-        return self.analyser.funnel(self.data, grouped='brand', metric='user_session')
 
 
 """
-    Data
-"""
-
-
-class DataManager:
-    def __init__(self, data_path='') -> None:
-        self.data_path = data_path
-        self.data = None
-
-    # Fetch data
-    # TODO: 1. can be converted to database; 2. specify nrows
-    def fetch(self):
-        if not self.data:
-            try:
-                self.data = pd.read_csv(self.data_path, nrows=1000)
-            except:  # TODO: more specific error handling
-                print('Unexpected error:', sys.exc_info()[0])
-        return self.data
-
-
-"""
-    Analyser
+    Analyser: provides functions to analyze pandas.DataFrame and output stats about them
 """
 
 
 class Analyser:
     def __init__(self) -> None:
         pass
-
-    # TODO: need to be split later on
-    def pre_process(self, nov):
-        """
-            Input: nov
-            Return: sales_nov, carts_nov, views_nov
-        """
-        nov.event_time = pd.to_datetime(nov["event_time"]).dt.date
-
-        sales_nov = nov.loc[nov.event_type == 'purchase']
-        carts_nov = nov.loc[nov.event_type == 'cart']
-        views_nov = nov.loc[nov.event_type == 'view']
-
-        return sales_nov, carts_nov, views_nov
 
     '''Helpers'''
 

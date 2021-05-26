@@ -15,12 +15,21 @@ export default function Analysis() {
       fetch('/api/top-categories-by-sales-with-revenue').then(res => res.json()).then(data => {
         setSpecTopCategoriesBySales(data);
       });
+    }, []);
+
+    useEffect(() => {
       fetch('/api/conversions').then(res => res.json()).then(data => {
         setSpecTopCategoriesByConversions(data);
       });
+    }, []);
+
+    useEffect(() => {
       fetch('/api/top-brands-by-sales-with-revenues').then(res => res.json()).then(data => {
         setSpecTopBrandsBySales(data);
       });
+    }, []);
+
+    useEffect(() => {
       fetch('/api/top-brands-by-conversions').then(res => res.json()).then(data => {
         setSpecTopBrandsByConversions(data);
       });
