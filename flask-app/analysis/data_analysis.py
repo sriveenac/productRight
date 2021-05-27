@@ -93,6 +93,6 @@ class DataAnalysis:
             'item_id': item_id,
             'category': self.itemid_to_category_code[item_id],
             'brand': self.itemid_to_brand[item_id]
-        } for _, item_id in nearest_items])
+        } for _, item_id in nearest_items]).transpose()
 
         return items_df

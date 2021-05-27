@@ -130,4 +130,4 @@ def get_top_brands_by_conversions():
 @app.route('/nearest-items')
 def get_nearest_items():
     df = data_analysis.find_nearest_item(1003461)
-    return df.to_html()
+    return df.to_json()

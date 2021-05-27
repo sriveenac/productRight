@@ -13,7 +13,7 @@ export default function Page() {
         {...menuProps}
         className={styles.proLayout}
       >
-        <div>
+        <div className={styles.content}>
           <Recommendation></Recommendation>
         </div>
       </ProLayout>

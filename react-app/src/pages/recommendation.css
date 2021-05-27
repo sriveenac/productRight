@@ -5,3 +5,8 @@
 .title {
   background: rgb(148, 121, 242);
 }
+
+.content {
+  height: 100%;
+  overflow: scroll;
+}
