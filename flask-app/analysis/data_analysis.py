@@ -1,3 +1,4 @@
+from pandas.core.frame import DataFrame
 from .data_manager import *
 from .recommender import *
 from .analyser import *
@@ -86,7 +87,7 @@ class DataAnalysis:
     '''Supported recommendations'''
     def find_nearest_item(self, item=None):
         if not item:
-            return
+            return pd.DataFrame({})
         
         nearest_items = self.recommender.find_nearest_item(item, self.item_to_user, self.user_to_item)
         items_df = pd.DataFrame([{
