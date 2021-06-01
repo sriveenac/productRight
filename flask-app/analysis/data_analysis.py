@@ -25,6 +25,7 @@ class DataAnalysis:
         # Unique user and item
         self.unique_user, self.unique_item = set(), set()
         self.user_to_item, self.item_to_user = defaultdict(set), defaultdict(set)
+        self.item_history = defaultdict(dict)
         self.user_to_idx, self.itemid_to_category_code, self.itemid_to_brand = dict(), dict(), dict()
         self.recommender = Recommender()
         self.data_preprocess_for_recommendation()
@@ -39,7 +40,7 @@ class DataAnalysis:
         # Loop through all the rows and create a unique user and item set
         idx = 0
         for _, row in self.data.iterrows():
-            userid, itemid, categorycode, brand = row[8], row[3], row[5], row[6] # TODO: wrongly indexed
+            userid, itemid, categorycode, brand, event_type, price = row[8], row[3], row[5], row[6], row[2], row[7] # TODO: wrongly indexed
             self.unique_user.add(userid)
             self.unique_item.add(itemid)
 
@@ -47,10 +48,17 @@ class DataAnalysis:
                 self.user_to_idx[userid] = idx
                 idx += 1
 
+            if itemid not in self.item_history:
+                self.item_history[itemid]['view']=0
+                self.item_history[itemid]['purchase']=0
+                self.item_history[itemid]['cart']=0
+                self.item_history[itemid]['price']=price
+
             self.user_to_item[userid].add(itemid)
             self.item_to_user[itemid].add(userid)
             self.itemid_to_category_code[itemid] = categorycode
             self.itemid_to_brand[itemid] = brand
+            self.item_history[itemid][event_type] += 1
 
     '''Basic data processing'''
     def get_item(self, item_id=None):
@@ -98,7 +106,8 @@ class DataAnalysis:
         items_df = pd.DataFrame([{
             'item_id': item_id,
             'category': self.itemid_to_category_code[item_id],
-            'brand': self.itemid_to_brand[item_id]
+            'brand': self.itemid_to_brand[item_id],
+            'price (USD)': self.item_history[item_id]['price']
         } for _, item_id in nearest_items]).transpose()
 
         return items_df
