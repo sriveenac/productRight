@@ -5,6 +5,14 @@ import ProLayout, {
 } from '@ant-design/pro-layout';
 import menuProps from './menuProps';
 import React, { useEffect, useState } from 'react';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from 'react-router-dom';
+import Analysis from '../components/container/analysis';
+import Recommendation from '../components/container/recommendation';
 
 export default function IndexPage() {
   // Get time
@@ -22,16 +30,31 @@ export default function IndexPage() {
 
   // Return layout
   return (
-    <>
+    <Router>
       <ProLayout
         {...menuProps}
         className={styles.proLayout}
       >
-        <div>
-          <h1 className={styles.title}>Page index</h1>
-          <h2>Current time is: {currentTime}</h2>
+
+        <div className={styles.content}>
+          <Switch>
+            <Route path='/recommendation'>
+              <Recommendation></Recommendation>
+            </Route>
+            
+            <Route path='/analysis'>
+              <Analysis></Analysis>
+            </Route>
+
+            <Route path='/'>
+              <div>
+                <h1 className={styles.title}>Page index</h1>
+                <h2>Current time is: {currentTime}</h2>
+              </div>
+            </Route>
+          </Switch>
         </div>
       </ProLayout>
-    </>
+    </Router>
   );
 }

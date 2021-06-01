@@ -4,16 +4,17 @@ import {
     BarChartOutlined,
     FundOutlined
 } from '@ant-design/icons';
+import { Link } from 'react-router-dom';
 
 export default {
     title: 'ProductRight',
-    logo: 'placeholder',
+    logo: 'https://raw.githubusercontent.com/BrandNewLifeJackie26/productRight/dev/placeholder.png',
 
     menuItemRender: (item, dom) => (
         <i>
-            <a href={item.path} style={{color: 'white'}}>
+            <Link to={item.path} style={{color: 'white'}}>
                 {dom}
-            </a>
+            </Link>
         </i>
     ),
 

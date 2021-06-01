@@ -4,7 +4,7 @@ from flask import Flask
 import vega_datasets
 import altair as alt
 
-from .analysis import *
+from analysis import *
 
 app = Flask(__name__)
 
