@@ -25,6 +25,14 @@ def get_vega_js():
     chart = chart.mark_point().encode(x='Displacement')
     return chart.to_json()
 
+
+'''Basic search'''
+@app.route('/get-item/<item_id>')
+def get_item(item_id):
+    df = data_analysis.get_item(int(item_id))
+    return df.to_json()
+
+
 '''Basic analysis/ visualization'''
 # By category
 # TODO: top x

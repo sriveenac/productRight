@@ -1,11 +1,12 @@
 import styles from './recommendation.css';
 import { useState, useEffect } from 'react';
-import { Cascader, Table } from 'antd'
+import { Cascader, Table, Button } from 'antd';
 
 export default function Recommendation() {
     // Item selecter
     // TODO: Get item id from back end
     const [itemId, setItemId] = useState('');
+    const [item, setItem] = useState({}); // Item information of current selected item
     const options = [
       {
         value: '1003461',
@@ -14,7 +15,6 @@ export default function Recommendation() {
     ];
 
     function itemIdOnChange(value) {
-      console.log(value[0]);
       setItemId(value[0]);
     };
 
@@ -24,7 +24,14 @@ export default function Recommendation() {
     
     // Get table-like json from back-end
     useEffect(()=>{
-      if (itemId === '' || itemId === undefined) return;
+      if (itemId === '' || itemId === undefined) {
+        setItem({});
+        return;
+      }
+
+      fetch(`/api/get-item/${itemId}`).then(res => res.json()).then(data => {
+        setItem(data);
+      })
 
       fetch(`/api/nearest-items/${itemId}`).then(res => res.json()).then(data => {
         // Convert table-like json data to antd Table data
@@ -71,7 +78,16 @@ export default function Recommendation() {
                     <Table 
                       dataSource={dataSource}
                       columns={columns}
-                      title={() => `Nearest items for item_id: ${itemId}`}
+                      title={() => {
+                        return (
+                          <table>
+                            <tbody>
+                              <td>Nearest items for item_id:<Button type='primary'>{itemId}</Button></td>
+                              <td>category:<Button type='dashed'>{item['category_code']}</Button></td>
+                              <td>brand:<Button type='dashed'>{item['brand']}</Button></td>
+                            </tbody>
+                          </table>
+                        )}}
                       scroll={{ y: 240 }}
                     />
                   </td>

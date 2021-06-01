@@ -52,6 +52,11 @@ class DataAnalysis:
             self.itemid_to_category_code[itemid] = categorycode
             self.itemid_to_brand[itemid] = brand
 
+    '''Basic data processing'''
+    def get_item(self, item_id=None):
+        if item_id == None:
+            return DataFrame()
+        return self.data[self.data.product_id==item_id].iloc[0]
 
     '''Supported analyses'''
     # TODO: exceptions
