@@ -1,8 +1,0 @@
-.proLayout {
-  height: 100vh;  /* 100% of parent component height */
-}
-
-.content {
-  height: 100%;
-  overflow: scroll;
-}

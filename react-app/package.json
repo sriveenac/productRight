@@ -22,6 +22,7 @@
   "dependencies": {
     "@ant-design/pro-layout": "^6.5.0",
     "@umijs/preset-react": "1.x",
+    "react-router-dom": "^5.2.0",
     "react-vega": "^7.4.3",
     "umi": "^3.4.15",
     "vega": "^5.20.2",
