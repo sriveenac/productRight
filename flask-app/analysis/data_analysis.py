@@ -17,7 +17,7 @@ class DataAnalysis:
         self.data = self.dm.fetch()
 
         # Data for basic analysis
-        self.sales_nov, self.carts_nov, self.views_nov = None, None, None
+        self.sales_nov,  = None
         self.analyser = Analyser()
         self.data_preprocess_for_analysis()
 
@@ -32,8 +32,7 @@ class DataAnalysis:
     def data_preprocess_for_analysis(self):
         if not (self.sales_nov and self.carts_nov and self.views_nov):
             self.sales_nov = self.data.loc[self.data.event_type == 'purchase']
-            self.carts_nov = self.data.loc[self.data.event_type == 'cart']
-            self.views_nov = self.data.loc[self.data.event_type == 'view']
+   
 
     def data_preprocess_for_recommendation(self):
         # Loop through all the rows and create a unique user and item set
@@ -79,6 +78,11 @@ class DataAnalysis:
 
     def top_brands_by_revenues(self, top=10):
         return self.analyser.generate_base_sum(self.sales_nov, metrics='price', grouped='brand', top=10)
+    
+    def conversions_by_brand(self):
+        top_10_cat_sales = self.top_brands_by_sales()
+        return self.analyser.conversions(
+            self.data, grouped='brand', metric='user_session', comp=top_10_cat_sales)
 
     def funnel_by_brand(self):
         return self.analyser.funnel(self.data, grouped='brand', metric='user_session')
